@@ -77,6 +77,7 @@ Our application now has authorization, various APIs with specific business logic
 Install the required libraries for unit testing:
 ```
 npm install --save-dev mocha chai chai-http sinon
+npm install -g mocha
 ```
 
 ### Instructions:

@@ -1,7 +1,8 @@
 const jsonwebtoken = require('jsonwebtoken');
 const constants = require('../constants');
+const User = require('../models/user');
 
-const { SECRET_KEY, GET_USER: getUser } = constants;
+const { SECRET_KEY } = constants;
 
 
 const excludedPaths = [
@@ -9,7 +10,7 @@ const excludedPaths = [
     '/register'
 ];
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     if (excludedPaths.includes(req.path)) {
         return next();
     }
@@ -24,12 +25,12 @@ const verifyToken = (req, res, next) => {
     try {
         const decoded = jsonwebtoken.verify(token, SECRET_KEY);
 
-        const user = getUser(decoded.id);
+        const user = await User.findById(decoded.id);
         if (user.session_uuid !== decoded.session_uuid) {
             return res.status(401).send('Unauthorized');
         }
 
-        req.currentUser = decoded;
+        req.currentUser = user;
         next();
     } catch (ex) {
         return res.status(401).send('Unauthorized');

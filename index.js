@@ -6,7 +6,7 @@ const verifyToken = require('./src/middleware/verifyToken');
 
 const app = express();
 app.use(express.json());
-const PORT = 3001;
+const PORT = 3002;
 
 // Instantiate APIs
 app.use(verifyToken);
@@ -16,3 +16,5 @@ app.use('/user', userApi);
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+module.exports = app;
