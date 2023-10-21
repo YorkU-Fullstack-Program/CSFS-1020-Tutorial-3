@@ -1,4 +1,4 @@
-# Tutorial #3 - MySQL Integration, Unit Tests, and Docker
+# Tutorial #3 - MySQL Integration, Unit Tests
 
 This exercise will once again build on the Node.js server we've been developing throughout these tutorials.
 
@@ -38,7 +38,7 @@ After setting up MySQL in a Docker container, try connecting with your preferred
 With our database connection established and a table ready, we need an extensible pattern to interact with our database data. This exercise focuses on creating a scalable modular pattern to effortlessly integrate our database into the application.
 
 ### Instructions:
-1. Create a new file in the `models` directory named `User.js`.
+1. Create a new file in the `models` directory named `user.js`.
 2. Write a JavaScript class named `User`. This class should have the following static methods:
    - `findById`: Accepts a number and returns a user object.
    - `findByUsername`: Accepts a username and returns a user object.

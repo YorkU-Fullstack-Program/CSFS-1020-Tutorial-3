@@ -4,7 +4,6 @@ const authApi = require('./src/routes/auth')
 
 const verifyToken = require('./src/middleware/verifyToken');
 
-
 const app = express();
 app.use(express.json());
 const PORT = 3001;
