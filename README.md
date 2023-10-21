@@ -1,7 +1,3 @@
-Here's the corrected README markdown:
-
----
-
 # Tutorial #3 - MySQL Integration, Unit Tests, and Docker
 
 This exercise will once again build on the Node.js server we've been developing throughout these tutorials.

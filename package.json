@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-2.git"
+    "url": "git+https://github.com/YorkU-Fullstack-Program/CSFS1020-Tutorial-3.git"
   },
   "author": "Neil Wadden",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-2/issues"
+    "url": "https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-3/issues"
   },
-  "homepage": "https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-2#readme",
+  "homepage": "https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-3#readme",
   "dependencies": {
     "argon2": "^0.31.1",
     "express": "^4.18.2",
