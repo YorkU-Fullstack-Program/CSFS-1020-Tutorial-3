@@ -1,0 +1,26 @@
+{
+  "name": "csf1020-tutorial-3",
+  "version": "1.0.0",
+  "description": "This exercise builds on the APIs that we wrote in the previous Tutorial. We will incorporate these APIs with a MySQL Database",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-2.git"
+  },
+  "author": "Neil Wadden",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-2/issues"
+  },
+  "homepage": "https://github.com/YorkU-Fullstack-Program/CSF1020-Tutorial-2#readme",
+  "dependencies": {
+    "argon2": "^0.31.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1"
+  }
+}
