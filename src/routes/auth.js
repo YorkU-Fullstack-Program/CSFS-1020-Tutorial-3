@@ -2,11 +2,7 @@ const express = require('express');
 const argon2 = require('argon2');
 const jsonwebtoken = require('jsonwebtoken');
 const { v4 } = require('uuid');
-const constants = require('../constants');
 const { User } = require('../models');
-
-
-const { SECRET_KEY } = constants;
 
 const router = express.Router();
 
@@ -25,7 +21,7 @@ router.post('/login', async (req, res) => {
 
     await foundUser.update();
 
-    const token = jsonwebtoken.sign({...foundUser.toJSON(), session_uuid: foundUser.session_uuid}, SECRET_KEY);
+    const token = jsonwebtoken.sign({...foundUser.toJSON(), session_uuid: foundUser.session_uuid}, process.env.APP_SECRET_KEY);
     return res.send(token);
 });
 

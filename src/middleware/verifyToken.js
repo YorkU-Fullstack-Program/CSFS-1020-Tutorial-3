@@ -1,8 +1,5 @@
 const jsonwebtoken = require("jsonwebtoken");
-const constants = require("../constants");
 const { User } = require("../models");
-
-const { SECRET_KEY, } = constants;
 
 const excludedPaths = ["/login", "/register"];
 
@@ -19,7 +16,7 @@ const verifyToken = async (req, res, next) => {
     return res.status(401).send("Unauthorized");
   }
   try {
-    const decoded = jsonwebtoken.verify(token, SECRET_KEY);
+    const decoded = jsonwebtoken.verify(token, process.env.APP_SECRET_KEY);
     const user = await User.findOne({ id: decoded.id });
 
     if (!user || user.session_uuid !== decoded.session_uuid) {
