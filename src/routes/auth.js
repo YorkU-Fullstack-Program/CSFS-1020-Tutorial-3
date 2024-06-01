@@ -6,14 +6,14 @@ const constants = require('../constants');
 const { User } = require('../models');
 
 
-const { USERS: users, SECRET_KEY, GET_USER: getUser } = constants;
+const { SECRET_KEY } = constants;
 
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
-    const foundUser = users.find(u => u.username ===username);
+    const foundUser = await User.findOne({ username});
 
     const verifiedPassword = foundUser && await argon2.verify(foundUser.password, password);
 
@@ -23,27 +23,17 @@ router.post('/login', async (req, res) => {
 
     foundUser.session_uuid = v4();
 
-    const token = jsonwebtoken.sign(foundUser, SECRET_KEY);
+    await foundUser.update();
+
+    const token = jsonwebtoken.sign({...foundUser.toJSON(), session_uuid: foundUser.session_uuid}, SECRET_KEY);
     return res.send(token);
 });
 
 router.post('/register', async (req, res) => {
-    // const userId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-
-    // const existingUser = users.find(u => u.username === req.body.username);
-    // if (existingUser) {
-    //     return res.status(401).send('Invalid Register Data.');
-    // }
-
-    // const newUser = {
-    //     // id: userId,
-    //     name: req.body.name,
-    //     age: req.body.age,
-    //     username: req.body.username,
-    //     password: await argon2.hash(req.body.password)
-    // };
-
-    // users.push(newUser);'
+    const existingUser = await User.findOne({ username: req.body.username});
+    if (existingUser) {
+        return res.status(401).send('Invalid Register Data.');
+    }
     
     const newUser = new User(
         null, 
@@ -59,11 +49,13 @@ router.post('/register', async (req, res) => {
     return res.status(201).send(`Created User: ${newUser.username}`);
 });
 
-router.post('/logout', (req, res) => {
+router.post('/logout', async (req, res) => {
     const user = req.currentUser;
 
-    const serverUser = getUser(user.id);
+    const serverUser = await User.getById(user.id);
     serverUser.session_uuid = v4();
+
+    await serverUser.update();
 
     return res.status(200).send('Logout successful.');
 });

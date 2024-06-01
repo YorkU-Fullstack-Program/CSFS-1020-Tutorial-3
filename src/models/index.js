@@ -1,8 +1,7 @@
-const db = require('./dbConnection');
-const User = require('./user');
-
+const db = require("./dbConnection");
+const User = require("./user");
 
 module.exports = {
-    db,
-    User
+  db,
+  User,
 };

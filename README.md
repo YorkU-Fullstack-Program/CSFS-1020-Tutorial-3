@@ -60,7 +60,7 @@ When you're working on an application for a long time, you're database will grow
 - Setup your `package.json` file so that you can easily run our migration functions (same as in your lab)
 - Populate the `database.json` file so the migration script is able to communicate with your database. Also create a `.env` file so that we have a proper way of storing our application's sensitive values.
 - Create our first migration with the following command: `npm run migrate create add-users-table`
-- Populate the generated SQL files so that we can use our migration to manage our databases's state. 
+- Populate the generated SQL files so that we can use our migration to manage our databases's state.
 - Update the rest of your application to use that `.env` file.
 
 ## Exercise #4 - Write Unit tests for our Existing APIs and our User model

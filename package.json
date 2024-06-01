@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "test"
+    "test": "test",
+    "migrate": "node node_modules/db-migrate/bin/db-migrate",
+    "migrate:up": "node node_modules/db-migrate/bin/db-migrate up",
+    "migrate:down": "node node_modules/db-migrate/bin/db-migrate down"
   },
   "repository": {
     "type": "git",
@@ -23,5 +26,9 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2-async": "^2.0.1",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "db-migrate": "^0.11.14",
+    "db-migrate-mysql": "^2.3.2"
   }
 }
