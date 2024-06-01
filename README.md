@@ -1,85 +1,81 @@
-# Tutorial #3 - MySQL Integration, Unit Tests, and Docker
+# Tutorial #3 - MySQL Integration, and Unit Tests
 
-This exercise will once again build on the Node.js server we've been developing throughout these tutorials.
+This exercise is going to once again build on the same nodejs server that we've slowly been building throughout these tutorial sessions.
 
-In this tutorial, our main focus will be to replace the logic that uses the `users` object in our constants file. We'll replace it with a database to persist data, ensuring we don't need to recreate users every time we start our application.
+In this tutorial the main focus is going to be to replace all of the logic we currently have which uses the `users` object in our constants file, and replace that with a database that we can use to persist data. That'll make sure we don't have re-create users when we start up our application
 
 ## Exercise #1 - Connecting Your Application to MySQL
 
 ### Introduction:
-In this exercise, we'll set up the initial MySQL connection between our application and an instance of MySQL running in a container.
+
+In this exercise we are going to setup the initial MySQL connection between our application and an instance of MySQL running in a container
 
 ### Setup:
-Ensure you have the latest MySQL Docker image. Execute the following command to do this:
-```
-docker pull mysql
-```
-Start your MySQL instance using the command below. Note: This command sets your database password as `password`. Choose a secure password for your application and avoid storing it in plain text:
-```
-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -p 3306:3306 -d mysql:latest
-```
 
-Install `mysql2-async` with:
-```
-npm install mysql2-async
-```
+Make sure you have the latest MySQL Docker image. Running the following command will accomplish this:
+`docker pull mysql`
+Start up your MySQL instance. The following command will start MySQL in a docker container. Note the below command sets your database password as `password`. Pick something secure for you're application and don't hide it in plain text:
+`docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=mydb -p 3306:3306 -d mysql:latest`
 
-After setting up MySQL in a Docker container, try connecting with your preferred database client. I use [TablePlus](https://tableplus.com/), which offers a generous free tier.
+Install the `mysql2-async` using npm install `mysql2-async`
+
+After you've setup MySQL to run in a docker container try connecting with your database client of choice. I use TablePlus(https://tableplus.com/). Which has a very usable free tier.
 
 ### Instructions:
-1. Create a new folder in our application at the same level as `middleware` and `routes`. Name it `models`.
-2. Within `models`, create two files: `index.js` (to export classes we write in `models` to the rest of our application) and `dbConnection.js` (to set up our database connection).
-3. In `dbConnection.js`, utilize `mysql2-async` to create a `db` object, which will serve as our connection point to the database.
-4. Using a SQL client of your choice, execute a `CREATE TABLE` query to create a `users` table, ensuring it matches the schema of the User objects in constants.
 
-## Exercise #2 - Incorporate the User Table into Your Application
+- Create a new folder in our application at the same level as `middleware` and `routes`. Call it `models`
+- In `models`. Create two files, an `index.js` file which we will use to export the classes we write in `models` to the rest of our application, and `dbConnection.js`, which is where we will setup our database connection.
+- In `dbConnection.js`, use the `mysql2-async` to create a `db` object which will be the connection point to the database in our application.
+- Using a SQL client of your choice run a `CREATE TABLE` query to create a `user` which matches the schema of the User objects in constants
+
+## Exercise #2 - Incorporate the User table in your Application
 
 ### Introduction:
-With our database connection established and a table ready, we need an extensible pattern to interact with our database data. This exercise focuses on creating a scalable modular pattern to effortlessly integrate our database into the application.
+
+Now that we have a database that we can connect to, and we have a table in our database. Now we need an extensible way to work with the data in our database. In this exercise we are going to be creating an extensible modular pattern (lots of buzz words), so that we can easily incorporate our database into our application.
+
+### Instructions
+
+- Create a new file in the models directory and call it User
+- Write a javascript class called user, that will have the following static methods
+  - `findById` - This function will take a number input and returns a user object
+  - `findByUsername` - This function should take a User's username and returns a user object
+- And the following instance methods
+  - `save` - This function should save the content of the user object to the database
+  - `update` - This function should should update the content of the user object in the database
+  - `isPasswordCorrect` - This function will take in a string (password) and validate if it correctly matches the User's password
+  - `logout` - This function should change the value on users `uuid` column, so that it no longer matches the value in the jwt.
+  - `toJSON` - This function will return an JSON object with the content of the user object. That we can return in an API setting. AKA don't return the hashed password
+- Use this new class to replace the Users constant that we have been using up until this point.
+
+## Exercise #3 - Create a framework for Running SQL Migrations against your Database
+
+### Introduction:
+
+When you're working on an application for a long time, you're database will grow and change over time. As your development team grows you can't give everyone permission to run SQL against the production database to create table. We need to build out a system so that can handle modifying the schema of our database for us.
 
 ### Instructions:
-1. Create a new file in the `models` directory named `User.js`.
-2. Write a JavaScript class named `User`. This class should have the following static methods:
-   - `findById`: Accepts a number and returns a user object.
-   - `findByUsername`: Accepts a username and returns a user object.
-3. The class should also have these instance methods:
-   - `save`: Saves the user object to the database.
-   - `update`: Updates the user object in the database.
-   - `isPasswordCorrect`: Validates if the input password matches the User's password.
-   - `logout`: Alters the value in the user's `uuid` column, ensuring it doesn't match the JWT value.
-   - `toJSON`: Returns a JSON representation of the user object without exposing sensitive data like the hashed password.
-4. Use this new class to replace the `Users` constant we've been employing.
 
-## Exercise #3 - Create a Framework for Running SQL Migrations Against Your Database
+- Install the `db-migrate` and `db-migrate-mysql` npm packages.
+- In the migrations folder create a new `.sql` file that starts with the number `001` and then a name. Include the SQL to create our users table in there.
+- In `migrate.js`, write a function that runs the SQL in our migrations folder in sequential file name order
+- To ensure we don't run migrations against a database more than once, we will make our first migration called `000-initial.sql`. In that migration create a table with 3 columns. An `id` column, a `name` column to track the name of the last migration applied to the database, and a `applied_at` column to track the time it was applied.
+- Run your migrations by called `node migrate.js`
+- Update the rest of your application to use that `.env` file.
+
+## Exercise #4 - Write Unit tests for our Existing APIs and our User model
 
 ### Introduction:
-As your application evolves and your team grows, database modifications will become frequent. Not everyone should have direct access to make changes in the production database. Thus, we need a system to manage schema modifications.
 
-### Extra Info:
-For production applications, consider using a professional-grade library, like Prisma, instead of building this from scratch. Prisma is an ORM (Object-Relational Mapper) with an excellent migration sub-library. If you're unfamiliar with ORM, explore this concept; it's a prevalent industry pattern for applications interfacing with databases.
-
-### Instructions:
-1. Create a file named `migrate.js` and a directory called `migrations`.
-2. In the `migrations` folder, make a new `.sql` file starting with the number `001` followed by a descriptive name. Write the SQL to create our `users` table in this file.
-3. In `migrate.js`, design a function that executes SQL files from the `migrations` folder in sequential order.
-4. To avoid applying migrations multiple times, our first migration should be `000-initial.sql`. This migration should create a table with three columns: `id`, `name` (to track the last applied migration), and `applied_at` (to record the application time).
-5. Execute your migrations with:
-```
-node migrate.js
-```
-
-## Exercise #4 - Write Unit Tests for Our Existing APIs and the User Model
-
-### Introduction:
-Our application now has authorization, various APIs with specific business logic, data storage capabilities, deployment, and migration management. However, one crucial component is missing: unit tests. We need these tests to prevent the integration of faulty code.
+At this point we have a pretty functional application. We have Authorization, a few APIs with specific business logic, a way to store data, and a way to deploy and run migrations. We are missing one key component to our application before we can create the next billion dollar start up. We need to write tests for our code to ensure we can prevent developers from merging code.
 
 ### Setup:
-Install the required libraries for unit testing:
-```
-npm install --save-dev mocha chai chai-http sinon
-```
+
+Install the following libraries to help us write our unit tests:
+`npm install --save-dev jest sinon supertest`
 
 ### Instructions:
-1. Write unit tests for the APIs in our application.
-2. Implement a mechanism to mock the database connection.
-3. For multi-path APIs, ensure tests cover both the "happy path" and potential failure paths. 
+
+- Write Unit tests for the API's we have wrote in our application.
+- Ensure we have a way to mock the connection to the database.
+- For APIs that have multiple paths, make sure our tests capture the "happy path" and the failure paths
