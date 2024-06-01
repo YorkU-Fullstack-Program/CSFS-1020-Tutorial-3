@@ -1,9 +1,9 @@
 const express = require('express');
 const userApi = require('./src/routes/user');
 const authApi = require('./src/routes/auth')
+const { db } = require('./src/models');
 
 const verifyToken = require('./src/middleware/verifyToken');
-
 
 const app = express();
 app.use(express.json());
